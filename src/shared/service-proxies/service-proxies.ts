@@ -2661,6 +2661,72 @@ export class FriendshipServiceProxy {
 }
 
 @Injectable()
+export class HFuncServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ? baseUrl : "";
+    }
+
+    /**
+     * @param filter (optional) 
+     * @return Success
+     */
+    getHFunc(filter: string | null | undefined): Observable<ListResultDtoOfHFuncListDto> {
+        let url_ = this.baseUrl + "/api/services/app/HFunc/GetHFunc?";
+        if (filter !== undefined)
+            url_ += "Filter=" + encodeURIComponent("" + filter) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetHFunc(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetHFunc(<any>response_);
+                } catch (e) {
+                    return <Observable<ListResultDtoOfHFuncListDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<ListResultDtoOfHFuncListDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetHFunc(response: HttpResponseBase): Observable<ListResultDtoOfHFuncListDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? ListResultDtoOfHFuncListDto.fromJS(resultData200) : new ListResultDtoOfHFuncListDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<ListResultDtoOfHFuncListDto>(<any>null);
+    }
+}
+
+@Injectable()
 export class HostDashboardServiceProxy {
     private http: HttpClient;
     private baseUrl: string;
@@ -12662,6 +12728,237 @@ export class AcceptFriendshipRequestInput implements IAcceptFriendshipRequestInp
 export interface IAcceptFriendshipRequestInput {
     userId: number | undefined;
     tenantId: number | undefined;
+}
+
+export class ListResultDtoOfHFuncListDto implements IListResultDtoOfHFuncListDto {
+    items!: HFuncListDto[] | undefined;
+
+    constructor(data?: IListResultDtoOfHFuncListDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            if (data["items"] && data["items"].constructor === Array) {
+                this.items = [] as any;
+                for (let item of data["items"])
+                    this.items!.push(HFuncListDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): ListResultDtoOfHFuncListDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ListResultDtoOfHFuncListDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (this.items && this.items.constructor === Array) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IListResultDtoOfHFuncListDto {
+    items: HFuncListDto[] | undefined;
+}
+
+export class HFuncListDto implements IHFuncListDto {
+    hFuncId!: string | undefined;
+    hFuncStatus!: HFuncStatus | undefined;
+    hFuncName!: string | undefined;
+    hFuncType!: HFuncType | undefined;
+    typeParameter!: string | undefined;
+    defaultValue!: string | undefined;
+    description!: string | undefined;
+    riskStatement!: string | undefined;
+    openSQL!: string | undefined;
+    closeSQL!: string | undefined;
+    products!: ProductInHFuncListDto[] | undefined;
+    isDeleted!: boolean | undefined;
+    deleterUserId!: number | undefined;
+    deletionTime!: moment.Moment | undefined;
+    lastModificationTime!: moment.Moment | undefined;
+    lastModifierUserId!: number | undefined;
+    creationTime!: moment.Moment | undefined;
+    creatorUserId!: number | undefined;
+    id!: number | undefined;
+
+    constructor(data?: IHFuncListDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.hFuncId = data["hFuncId"];
+            this.hFuncStatus = data["hFuncStatus"];
+            this.hFuncName = data["hFuncName"];
+            this.hFuncType = data["hFuncType"];
+            this.typeParameter = data["typeParameter"];
+            this.defaultValue = data["defaultValue"];
+            this.description = data["description"];
+            this.riskStatement = data["riskStatement"];
+            this.openSQL = data["openSQL"];
+            this.closeSQL = data["closeSQL"];
+            if (data["products"] && data["products"].constructor === Array) {
+                this.products = [] as any;
+                for (let item of data["products"])
+                    this.products!.push(ProductInHFuncListDto.fromJS(item));
+            }
+            this.isDeleted = data["isDeleted"];
+            this.deleterUserId = data["deleterUserId"];
+            this.deletionTime = data["deletionTime"] ? moment(data["deletionTime"].toString()) : <any>undefined;
+            this.lastModificationTime = data["lastModificationTime"] ? moment(data["lastModificationTime"].toString()) : <any>undefined;
+            this.lastModifierUserId = data["lastModifierUserId"];
+            this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
+            this.creatorUserId = data["creatorUserId"];
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): HFuncListDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new HFuncListDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["hFuncId"] = this.hFuncId;
+        data["hFuncStatus"] = this.hFuncStatus;
+        data["hFuncName"] = this.hFuncName;
+        data["hFuncType"] = this.hFuncType;
+        data["typeParameter"] = this.typeParameter;
+        data["defaultValue"] = this.defaultValue;
+        data["description"] = this.description;
+        data["riskStatement"] = this.riskStatement;
+        data["openSQL"] = this.openSQL;
+        data["closeSQL"] = this.closeSQL;
+        if (this.products && this.products.constructor === Array) {
+            data["products"] = [];
+            for (let item of this.products)
+                data["products"].push(item.toJSON());
+        }
+        data["isDeleted"] = this.isDeleted;
+        data["deleterUserId"] = this.deleterUserId;
+        data["deletionTime"] = this.deletionTime ? this.deletionTime.toISOString() : <any>undefined;
+        data["lastModificationTime"] = this.lastModificationTime ? this.lastModificationTime.toISOString() : <any>undefined;
+        data["lastModifierUserId"] = this.lastModifierUserId;
+        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
+        data["creatorUserId"] = this.creatorUserId;
+        data["id"] = this.id;
+        return data; 
+    }
+}
+
+export interface IHFuncListDto {
+    hFuncId: string | undefined;
+    hFuncStatus: HFuncStatus | undefined;
+    hFuncName: string | undefined;
+    hFuncType: HFuncType | undefined;
+    typeParameter: string | undefined;
+    defaultValue: string | undefined;
+    description: string | undefined;
+    riskStatement: string | undefined;
+    openSQL: string | undefined;
+    closeSQL: string | undefined;
+    products: ProductInHFuncListDto[] | undefined;
+    isDeleted: boolean | undefined;
+    deleterUserId: number | undefined;
+    deletionTime: moment.Moment | undefined;
+    lastModificationTime: moment.Moment | undefined;
+    lastModifierUserId: number | undefined;
+    creationTime: moment.Moment | undefined;
+    creatorUserId: number | undefined;
+    id: number | undefined;
+}
+
+export enum HFuncStatus {
+    Standard = 1, 
+    Available = 2, 
+    Disabled = 3, 
+}
+
+export enum HFuncType {
+    AddMenu = 1, 
+    AddParameter = 2, 
+}
+
+export class ProductInHFuncListDto implements IProductInHFuncListDto {
+    productName!: ProductName | undefined;
+    version!: string | undefined;
+    creationTime!: moment.Moment | undefined;
+    creatorUserId!: number | undefined;
+    id!: number | undefined;
+
+    constructor(data?: IProductInHFuncListDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.productName = data["productName"];
+            this.version = data["version"];
+            this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
+            this.creatorUserId = data["creatorUserId"];
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): ProductInHFuncListDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ProductInHFuncListDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["productName"] = this.productName;
+        data["version"] = this.version;
+        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
+        data["creatorUserId"] = this.creatorUserId;
+        data["id"] = this.id;
+        return data; 
+    }
+}
+
+export interface IProductInHFuncListDto {
+    productName: ProductName | undefined;
+    version: string | undefined;
+    creationTime: moment.Moment | undefined;
+    creatorUserId: number | undefined;
+    id: number | undefined;
+}
+
+export enum ProductName {
+    EShop5 = 1, 
+    EWeight5 = 2, 
+    EBeauty5 = 3, 
+    EShopFS5 = 4, 
+    EyBaby6 = 5, 
 }
 
 export enum ChartDateInterval {
