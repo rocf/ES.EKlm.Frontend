@@ -10,7 +10,7 @@ export class PrimengTableHelper {
 
     isResponsive = true;
 
-    resizableColumns: false;
+    resizableColumns: boolean;
 
     totalRecordsCount = 0;
 

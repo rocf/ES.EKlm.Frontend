@@ -1,33 +1,54 @@
-import { Component, Injector, OnInit } from '@angular/core';
+import { Component, Injector, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
 import { AppComponentBase } from '@shared/common/app-component-base';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
 import { HFuncServiceProxy, HFuncListDto, ListResultDtoOfHFuncListDto } from '@shared/service-proxies/service-proxies';
+import { LazyLoadEvent } from 'primeng/components/common/lazyloadevent';
+import { Paginator } from 'primeng/components/paginator/paginator';
+import { Table } from 'primeng/components/table/table';
+import { PrimengTableHelper } from 'shared/helpers/PrimengTableHelper';
+import { FileUpload } from 'primeng/fileupload';
+
+import { CreateOrEditHFuncModalComponent } from './create-or-edit-hfunc-modal.component'
+
 
 @Component({
   selector: 'app-hidden-func',
   templateUrl: './hidden-func.component.html',
   styleUrls: ['./hidden-func.component.less'],
-  animations: [appModuleAnimation()]
+  encapsulation: ViewEncapsulation.None,
+  animations: [ appModuleAnimation()]
 })
-export class HiddentFuncComponent extends AppComponentBase implements OnInit {
+export class HiddenFuncComponent extends AppComponentBase implements OnInit {
+  
+  @ViewChild('createOrEditHFuncModal', {static: true}) createOrEditHFuncModal: CreateOrEditHFuncModalComponent;
 
-  hfunc: HFuncListDto[] = [];
-  filter: string = "";
+  @ViewChild('dataTable', {static: true}) dataTable: Table;
+  @ViewChild('paginator', {static: true}) paginator: Paginator;
 
-  constructor( 
+  
+  private hfunc: HFuncListDto[] = [];
+  private filter: string = "";
+
+  constructor(
     injector: Injector,
-    private _hFuncService: HFuncServiceProxy) { 
-    super(injector);
-  }
+    private _hFuncServiceProxy: HFuncServiceProxy
+  ) {
+    super(injector)
+   }
 
   ngOnInit() : void {
+    //this.primengTableHelper.resizableColumns = true;
     this.getHFunc();
   }
 
   getHFunc(): void {
-    this._hFuncService.getHFunc(this.filter).subscribe((r) => {
+    this._hFuncServiceProxy.getHFunc(this.filter).subscribe((r) => {
       this.hfunc = r.items;
     })
+  }
+
+  createHFunc(): void {
+    this.createOrEditHFuncModal.show();
   }
 
 }

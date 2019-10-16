@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { HiddentFuncComponent } from './hidden-func.component';
+import { HiddenFuncComponent } from './hidden-func.component';
 
-describe('HiddentFuncComponent', () => {
-  let component: HiddentFuncComponent;
-  let fixture: ComponentFixture<HiddentFuncComponent>;
+describe('HiddenFuncComponent', () => {
+  let component: HiddenFuncComponent;
+  let fixture: ComponentFixture<HiddenFuncComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ HiddentFuncComponent ]
+      declarations: [ HiddenFuncComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(HiddentFuncComponent);
+    fixture = TestBed.createComponent(HiddenFuncComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -8,10 +8,14 @@ import { ModalModule, TabsModule, TooltipModule, BsDropdownModule, PopoverModule
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { MainRoutingModule } from './main-routing.module';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { TableModule } from 'primeng/table';
+import {PaginatorModule} from 'primeng/paginator';
+
 
 import { BsDatepickerModule, BsDatepickerConfig, BsDaterangepickerConfig, BsLocaleService } from 'ngx-bootstrap/datepicker';
 import { NgxBootstrapDatePickerConfigService } from 'assets/ngx-bootstrap/ngx-bootstrap-datepicker-config.service';
-import { HiddentFuncComponent } from './hidden-func/hidden-func.component';
+import { HiddenFuncComponent } from './hidden-func/hidden-func.component';
+import { CreateOrEditHFuncModalComponent } from './hidden-func/create-or-edit-hfunc-modal.component';
 
 NgxBootstrapDatePickerConfigService.registerNgxBootstrapDatePickerLocales();
 
@@ -27,13 +31,17 @@ NgxBootstrapDatePickerConfigService.registerNgxBootstrapDatePickerLocales();
         MainRoutingModule,
         CountoModule,
         NgxChartsModule,
+        TableModule,
+        PaginatorModule,
         BsDatepickerModule.forRoot(),
         BsDropdownModule.forRoot(),
         PopoverModule.forRoot()
     ],
     declarations: [
         DashboardComponent,
-        HiddentFuncComponent
+        HiddenFuncComponent,
+        CreateOrEditHFuncModalComponent
+    
     ],
     providers: [
         { provide: BsDatepickerConfig, useFactory: NgxBootstrapDatePickerConfigService.getDatepickerConfig },
