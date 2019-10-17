@@ -12,7 +12,7 @@
 		</div>
 		<div class="kt-subheader__toolbar">
 			<div class="kt-subheader__wrapper">
-				<button (click)="createHFunc()" *ngIf="'Pages.Administration.Roles.Create' | permission"
+				<button (click)="createHFunc()"
 					class="btn btn-primary"><i class="fa fa-plus"></i> 添加隐藏功能</button>
 			</div>
 		</div>
@@ -30,7 +30,7 @@
 										<input [(ngModel)]="filterText" name="filterText" autoFocus class="form-control m-input"
 											[placeholder]="l('SearchWithThreeDot')" type="text">
 										<span class="input-group-btn">
-											<button (click)="getUsers()" class="btn btn-primary" type="submit"><i class="flaticon-search-1"
+											<button (click)="getHFunc(filter)" class="btn btn-primary" type="submit"><i class="flaticon-search-1"
 													[attr.aria-label]="l('Search')"></i></button>
 										</span>
 									</div>
@@ -43,7 +43,7 @@
 				<div class="row align-items-center">
 					<div class="primeng-datatable-container" [busyIf]="primengTableHelper.isLoading">
 
-						<p-table #dataTable (onLazyLoad)="getUsers($event)" [value]="primengTableHelper.records"
+						<p-table #dataTable (onLazyLoad)="getHFunc($event)" [value]="primengTableHelper.records"
 							rows="{{primengTableHelper.defaultRecordsCountPerPage}}" [paginator]="false" [lazy]="true"
 							[scrollable]="true" ScrollWidth="100%" [responsive]="primengTableHelper.isResponsive"
 							[resizableColumns]="primengTableHelper.resizableColumns">
@@ -102,7 +102,7 @@
 						</div>
 						<div class="primeng-paging-container">
 							<p-paginator [rows]="primengTableHelper.defaultRecordsCountPerPage" #paginator
-								(onPageChange)="getUsers($event)" [totalRecords]="primengTableHelper.totalRecordsCount"
+								(onPageChange)="getHFunc($event)" [totalRecords]="primengTableHelper.totalRecordsCount"
 								[rowsPerPageOptions]="primengTableHelper.predefinedRecordsCountPerPage">
 
 							</p-paginator>
@@ -116,3 +116,5 @@
 		</div>
 	</div>
 </div>
+
+<app-create-or-edit-hfunc-modal #createOrEditHFuncModal (modalSave)="getHFunc()"> </app-create-or-edit-hfunc-modal>

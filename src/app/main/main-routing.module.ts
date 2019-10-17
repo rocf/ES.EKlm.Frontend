@@ -12,7 +12,7 @@ import { HiddenFuncComponent } from './hidden-func/hidden-func.component';
                     { path: 'dashboard', component: DashboardComponent, data: { permission: 'Pages.Tenant.Dashboard' } }
                 ]
             },
-            {path: 'hidden-func', component: HiddenFuncComponent}
+            {path: 'hidden-func', component: HiddenFuncComponent},
         ])
     ],
     exports: [
